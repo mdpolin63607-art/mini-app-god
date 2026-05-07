@@ -14,23 +14,15 @@
 <button onclick="claim()">Claim</button>
 <button onclick="daily()">Daily</button>
 
-<p id="msg"></p>
-
 <h3>Leaderboard</h3>
 <div id="top"></div>
 
-<button onclick="claim()">Claim</button>
-<button onclick="daily()">Daily</button>
-
-<p id="msg"></p>
-
-<div id="top"></div>
-
 <script>
-let tg = window.Telegram.WebApp;
-tg.expand();
 
-let id = tg.initDataUnsafe?.user?.id || "user123";
+let tg = window.Telegram?.WebApp;
+tg?.expand();
+
+let id = tg?.initDataUnsafe?.user?.id || "user123";
 
 async function load(){
   let res = await fetch("/user",{
@@ -40,32 +32,29 @@ async function load(){
   });
 
   let u = await res.json();
-  document.getElementById("bal").innerText = "Balance: " + u.balance;
+
+  document.getElementById("bal").innerText =
+  "Balance: " + u.balance;
+
   loadTop();
 }
 
 async function claim(){
-  let res = await fetch("/claim",{
+  await fetch("/claim",{
     method:"POST",
     headers:{ "Content-Type":"application/json" },
     body: JSON.stringify({ id })
   });
-
-  let u = await res.json();
-  if(u.error) return alert(u.error);
 
   load();
 }
 
 async function daily(){
-  let res = await fetch("/daily",{
+  await fetch("/daily",{
     method:"POST",
     headers:{ "Content-Type":"application/json" },
     body: JSON.stringify({ id })
   });
-
-  let u = await res.json();
-  if(u.error) return alert(u.error);
 
   load();
 }
@@ -75,10 +64,11 @@ async function loadTop(){
   let data = await res.json();
 
   document.getElementById("top").innerHTML =
-  data.map(x=>`<p>${x.id} - ${x.balance}</p>`).join("");
+  data.map(x => `<p>${x.id} - ${x.balance}</p>`).join("");
 }
 
 load();
+
 </script>
 
 </body>
