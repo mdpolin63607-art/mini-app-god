@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>God Mode App</title>
+</head>
+
+<body style="background:#000;color:white;text-align:center;font-family:Arial">
+
+<h1>🔥 GOD MODE APP</h1>
+
+<h2 id="bal">Balance: 0</h2>
+
+<button onclick="claim()">Claim</button>
+<button onclick="daily()">Daily</button>
+
+<p id="msg"></p>
+
+<div id="top"></div>
+
+<script>
+let id = "user123";
+
+async function load(){
+  let res = await fetch("/user",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ id })
+  });
+
+  let u = await res.json();
+  document.getElementById("bal").innerText = "Balance: " + u.balance;
+  loadTop();
+}
+
+async function claim(){
+  let res = await fetch("/claim",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ id })
+  });
+
+  let u = await res.json();
+  if(u.error) return alert(u.error);
+
+  load();
+}
+
+async function daily(){
+  let res = await fetch("/daily",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ id })
+  });
+
+  let u = await res.json();
+  if(u.error) return alert(u.error);
+
+  load();
+}
+
+async function loadTop(){
+  let res = await fetch("/top");
+  let data = await res.json();
+
+  document.getElementById("top").innerHTML =
+  data.map(x=>`<p>${x.id} - ${x.balance}</p>`).join("");
+}
+
+load();
+</script>
+
+</body>
+</html>
